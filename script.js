@@ -77,16 +77,6 @@ class Game {
         this.canvas.height = 800;
     }
 
-    isColliding(entity1, entity2) {
-        if (entity1.x < entity2.x + entity2.width &&
-            entity1.x + entity1.width > entity2.x &&
-            entity1.y < entity2.y + entity2.height &&
-            entity1.y + entity1.height > entity2.y) {
-            return true;
-        }
-        return false;
-    }
-
     initEventListeners() {
         const handledKeys = {"ArrowUp": "up", "ArrowDown": "down" , "ArrowLeft": "left", "ArrowRight": "right", "KeyW": "up", "KeyS": "down", "KeyA": "left", "KeyD": "right"};
         document.addEventListener("keydown", (event) => {
@@ -122,15 +112,6 @@ class Game {
         });
     }
 
-    tryToMove(entity, x = 0, y = 0) {
-        if (entity.x + x >= 0 && entity.x + entity.width + x <= this.canvas.width) {
-            entity.x += x;
-        }
-        if (entity.y + y >= 0 && entity.y + entity.height + y <= this.canvas.height) {
-            entity.y += y;
-        }
-    }
-
     handlePlayerKeybordMove() {
         for (let key in this.buttonsPressed) {
             if (this.buttonsPressed[key]) {
@@ -152,9 +133,18 @@ class Game {
         }
     }
 
+    tryToMove(entity, x = 0, y = 0) {
+        if (entity.x + x >= 0 && entity.x + entity.width + x <= this.canvas.width) {
+            entity.x += x;
+        }
+        if (entity.y + y >= 0 && entity.y + entity.height + y <= this.canvas.height) {
+            entity.y += y;
+        }
+    }
+
     autoMoveEnemys() {
         const ACCELERATION = 0.15;
-        const RANDOM_MOLTIPILER = 2;
+        const RANDOM_MULTIPILER = 2;
 
         for (let enemy of this.enemys) {
             this.tryToMove(enemy, enemy.moveVector.x, enemy.moveVector.y);
@@ -189,9 +179,19 @@ class Game {
             }
 
             // Add some randomness to the movement
-            enemy.moveVector.x += (Math.random() * 0.5 - 0.25) * RANDOM_MOLTIPILER;
-            enemy.moveVector.y += (Math.random() * 0.5 - 0.25) * RANDOM_MOLTIPILER;
+            enemy.moveVector.x += (Math.random() * 0.5 - 0.25) * RANDOM_MULTIPILER;
+            enemy.moveVector.y += (Math.random() * 0.5 - 0.25) * RANDOM_MULTIPILER;
         }
+    }
+
+    isColliding(entity1, entity2) {
+        if (entity1.x < entity2.x + entity2.width &&
+            entity1.x + entity1.width > entity2.x &&
+            entity1.y < entity2.y + entity2.height &&
+            entity1.y + entity1.height > entity2.y) {
+            return true;
+        }
+        return false;
     }
 
     summonEnemy() {
@@ -212,7 +212,6 @@ class Game {
 
         this.enemys.push(enemy);
     }
-
 
     update() {
         this.handlePlayerKeybordMove();
