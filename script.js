@@ -88,35 +88,36 @@ class Game {
     }
 
     initEventListeners() {
-        const handledKeys = {"ArrowUp": "up", "ArrowDown": "down" , "ArrowLeft": "left", "ArrowRight": "right", "w": "up", "s": "down", "a": "left", "d": "right"};
+        const handledKeys = {"ArrowUp": "up", "ArrowDown": "down" , "ArrowLeft": "left", "ArrowRight": "right", "KeyW": "up", "KeyS": "down", "KeyA": "left", "KeyD": "right"};
         document.addEventListener("keydown", (event) => {
-            if (event.key in handledKeys) {
-                this.buttonsPressed[handledKeys[event.key]] = true;
+            console.log(event.code);
+            if (event.code in handledKeys) {
+                this.buttonsPressed[handledKeys[event.code]] = true;
             }
 
-            switch(event.key) {
-                case " ":
+            switch(event.code) {
+                case "Space":
                 case "Enter":
                     if (this.gameOver) {
                         this.gameOver = false;
                         this.resetGame();
                     }
                     break;
-                case "r":
+                case "KeyR":
                     if (this.gameOver) {
                         this.gameOver = false;
                     }
                     this.resetGame();
                     break;
                 case "Escape":
-                case "p":
+                case "KeyP":
                     this.paused = !this.paused;
                     break;
             }
         });
         document.addEventListener("keyup", (event) => {
-            if (event.key in handledKeys) {
-                this.buttonsPressed[handledKeys[event.key]] = false;
+            if (event.code in handledKeys) {
+                this.buttonsPressed[handledKeys[event.code]] = false;
             }
         });
     }
