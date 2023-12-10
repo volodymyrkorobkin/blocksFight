@@ -65,6 +65,9 @@ class Game {
         this.initCanvas();
         this.resetGame();
         this.initEventListeners();
+
+        this.paused = false;
+        this.gameOver = false;
     }
 
     initCanvas() {
@@ -89,6 +92,26 @@ class Game {
         document.addEventListener("keydown", (event) => {
             if (event.key in handledKeys) {
                 this.buttonsPressed[handledKeys[event.key]] = true;
+            }
+
+            switch(event.key) {
+                case " ":
+                case "Enter":
+                    if (this.gameOver) {
+                        this.gameOver = false;
+                        this.resetGame();
+                    }
+                    break;
+                case "r":
+                    if (this.gameOver) {
+                        this.gameOver = false;
+                    }
+                    this.resetGame();
+                    break;
+                case "Escape":
+                case "p":
+                    this.paused = !this.paused;
+                    break;
             }
         });
         document.addEventListener("keyup", (event) => {
@@ -129,7 +152,6 @@ class Game {
     }
 
     autoMoveEnemys() {
-        const MAX_SPEED = 5;
         const ACCELERATION = 0.15;
         const RANDOM_MOLTIPILER = 2;
 
@@ -206,9 +228,8 @@ class Game {
             if (!this.isColliding(this.player, enemy)) {
                 continue;
             }
-            alert("Game Over!");
+            this.gameOver = true;
             this.score.saveScore();
-            this.resetGame();
         }
 
 
@@ -255,9 +276,23 @@ class Game {
         
     }
 
-    loop() {
-        this.update();
+    loop() { 
         this.draw();
+        if (this.paused) {
+            this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "30px Arial";
+            this.ctx.fillText("Paused", this.canvas.width/2 - 50, this.canvas.height/2 - 50);
+        } else if (this.gameOver) {
+            this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "30px Arial";
+            this.ctx.fillText("Game Over", this.canvas.width/2 - 70, this.canvas.height/2 - 50);
+        } else {
+            this.update();
+        }
     }
 }
 
